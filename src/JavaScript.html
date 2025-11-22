@@ -144,4 +144,32 @@
 
     return content;
   }
+
+  function toggleTheme() {
+    const body = document.body;
+    const btn = document.getElementById("themeBtn");
+
+    // Check if we are forcing dark mode currently, or if system is dark and we haven't set a class
+    const isSystemDark = window.matchMedia(
+      "(prefers-color-scheme: dark)"
+    ).matches;
+    const isDarkClass = body.classList.contains("dark-mode");
+    const isLightClass = body.classList.contains("light-mode");
+
+    let targetMode = "dark";
+
+    if (isDarkClass) {
+      targetMode = "light";
+    } else if (isLightClass) {
+      targetMode = "dark";
+    } else {
+      // No class set, using system preference
+      targetMode = isSystemDark ? "light" : "dark";
+    }
+
+    body.classList.remove("dark-mode", "light-mode");
+    body.classList.add(targetMode + "-mode");
+
+    btn.textContent = targetMode === "dark" ? "☀️ Light" : "🌙 Dark";
+  }
 </script>
