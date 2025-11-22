@@ -6,7 +6,7 @@ This tool streamlines the documentation process by allowing you to draft in a ri
 
 ## **🎥 Demo**
 
-_Paste your text, click convert, and it's copied to your clipboard instantly._
+![Demo of the App](./assets/GS_DocToMD_Demo.gif)
 
 ## **🚀 Features**
 
