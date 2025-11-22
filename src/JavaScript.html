@@ -124,6 +124,24 @@
       return "\n" + content + "\n";
     }
 
+    const fontFamily = style.fontFamily.toLowerCase();
+    const isMonospace =
+      fontFamily.includes("courier") ||
+      fontFamily.includes("consolas") ||
+      fontFamily.includes("mono");
+
+    if (tagName === "code" || isMonospace) {
+      // Avoid double wrapping if recursion already handled it or if it's a block
+      if (!content.startsWith("`")) {
+        content = `\`${content}\``;
+      }
+    }
+
+    // Code Blocks (Pre)
+    if (tagName === "pre") {
+      return `\n\`\`\`\n${content}\n\`\`\`\n`;
+    }
+
     return content;
   }
 </script>
