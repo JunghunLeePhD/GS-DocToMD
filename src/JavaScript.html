@@ -1,5 +1,22 @@
 <script>
-  function convertAndCopy() {}
+  async function convertAndCopy() {
+    const pasteArea = document.getElementById("pasteArea");
+
+    const markdown = parseNode(pasteArea).trim();
+
+    if (!markdown) {
+      showToast("Please paste some text first.", true);
+      return;
+    }
+
+    try {
+      await navigator.clipboard.writeText(markdown);
+      showToast("Markdown copied to clipboard!");
+    } catch (err) {
+      console.error("Failed to copy: ", err);
+      showToast("Failed to copy. Check permissions.", true);
+    }
+  }
 
   function showToast(message, isError = false) {
     const x = document.getElementById("toast");
@@ -9,5 +26,12 @@
     setTimeout(function () {
       x.className = x.className.replace("show", "");
     }, 3000);
+  }
+
+  /**
+   * Recursive function to convert HTML DOM nodes to Markdown
+   */
+  function parseNode(node) {
+    return node;
   }
 </script>
