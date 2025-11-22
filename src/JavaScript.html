@@ -1,5 +1,13 @@
 <script>
   function convertAndCopy() {}
 
-  function showToast(message, isError = false) {}
+  function showToast(message, isError = false) {
+    const x = document.getElementById("toast");
+    x.textContent = message;
+    x.style.backgroundColor = isError ? "#ef4444" : "#333";
+    x.className = "show";
+    setTimeout(function () {
+      x.className = x.className.replace("show", "");
+    }, 3000);
+  }
 </script>
