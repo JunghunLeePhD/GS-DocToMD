@@ -12,20 +12,19 @@
     --shadow: rgba(0, 0, 0, 0.1);
   }
 
-  /* Dark Mode Overrides (System Default) */
+  /* Dark Mode Overrides */
   @media (prefers-color-scheme: dark) {
     :root {
-      --bg: #0f172a; /* Slate 900 */
-      --surface: #1e293b; /* Slate 800 */
-      --text: #f1f5f9; /* Slate 100 */
-      --border: #334155; /* Slate 700 */
-      --input-bg: #020617; /* Slate 950 */
+      --bg: #0f172a;
+      --surface: #1e293b;
+      --text: #f1f5f9;
+      --border: #334155;
+      --input-bg: #020617;
       --placeholder: #475569;
       --shadow: rgba(0, 0, 0, 0.5);
     }
   }
 
-  /* Manual Override Class (for the toggle button) */
   body.dark-mode {
     --bg: #0f172a;
     --surface: #1e293b;
@@ -55,7 +54,7 @@
     padding: 0;
     display: flex;
     justify-content: center;
-    align-items: center; /* Centered properly */
+    align-items: center;
     min-height: 100vh;
     transition: background-color 0.3s ease, color 0.3s ease;
   }
@@ -71,7 +70,8 @@
     display: flex;
     flex-direction: column;
     gap: 20px;
-    height: 70vh; /* Fixed height for demo */
+    min-height: 80vh;
+    max-height: 90vh;
     transition: background-color 0.3s ease, box-shadow 0.3s ease;
   }
 
@@ -96,11 +96,6 @@
     box-shadow: none;
   }
 
-  .theme-toggle:hover {
-    background: var(--bg);
-    transform: translateY(0);
-  }
-
   .label {
     font-weight: 600;
     color: var(--text);
@@ -111,7 +106,6 @@
     opacity: 0.8;
   }
 
-  /* Updated: Uses variable for background instead of 'white' */
   #pasteArea {
     flex: 1;
     padding: 1.5rem;
@@ -124,6 +118,8 @@
     transition: border-color 0.2s, background-color 0.3s ease;
     font-size: 1rem;
     line-height: 1.6;
+    /* ADDED: Smooth typing on iOS */
+    -webkit-overflow-scrolling: touch;
   }
 
   #pasteArea:focus {
@@ -155,6 +151,7 @@
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     display: flex;
     align-items: center;
+    justify-content: center; /* Ensures text centering if button spans full width */
     gap: 8px;
   }
 
@@ -168,22 +165,10 @@
     transform: translateY(0);
   }
 
-  button.secondary {
-    background-color: transparent;
-    color: var(--text);
-    border: 1px solid var(--border);
-    box-shadow: none;
-  }
-
-  button.secondary:hover {
-    background-color: var(--bg);
-  }
-
-  /* Toast Notification */
   #toast {
     visibility: hidden;
     min-width: 250px;
-    background-color: var(--text); /* Inverted for contrast */
+    background-color: var(--text);
     color: var(--bg);
     text-align: center;
     border-radius: 8px;
@@ -203,5 +188,44 @@
     visibility: visible;
     opacity: 1;
     bottom: 50px;
+  }
+
+  /* --- MOBILE RESPONSIVENESS (iPhone/Android) --- */
+  @media (max-width: 600px) {
+    body {
+      /* Prevents content from being cut off on small screens if it gets tall */
+      align-items: flex-start;
+      padding-top: 20px;
+    }
+
+    .container {
+      margin: 0;
+      width: 100%;
+      max-width: none;
+      border-radius: 0; /* Full width look */
+      padding: 1.25rem;
+      box-shadow: none; /* Flatter look for mobile */
+      height: auto; /* Let content dictate height */
+      min-height: 90vh; /* Takes up most of the screen */
+    }
+
+    h1 {
+      font-size: 1.25rem; /* Smaller title */
+    }
+
+    .actions {
+      flex-direction: column; /* Stack buttons vertically */
+      width: 100%;
+    }
+
+    button {
+      width: 100%; /* Full width buttons are easier to tap */
+      padding: 14px; /* Larger tap target */
+    }
+
+    #pasteArea {
+      padding: 1rem;
+      font-size: 16px; /* Prevents iOS from zooming in on focus */
+    }
   }
 </style>
