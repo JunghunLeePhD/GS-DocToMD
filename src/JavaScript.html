@@ -1,4 +1,11 @@
 <script>
+  function clearBoard() {
+    const pasteArea = document.getElementById("pasteArea");
+    pasteArea.innerHTML = ""; // Wipes the content
+    pasteArea.focus(); // Puts cursor back in the box immediately
+    showToast("Board cleared");
+  }
+
   async function convertAndCopy() {
     const pasteArea = document.getElementById("pasteArea");
 
