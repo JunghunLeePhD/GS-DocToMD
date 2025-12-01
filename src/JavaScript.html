@@ -1,4 +1,32 @@
 <script>
+  function toggleTheme() {
+    const body = document.body;
+    const btn = document.getElementById("themeBtn");
+
+    // Check if we are forcing dark mode currently, or if system is dark and we haven't set a class
+    const isSystemDark = window.matchMedia(
+      "(prefers-color-scheme: dark)"
+    ).matches;
+    const isDarkClass = body.classList.contains("dark-mode");
+    const isLightClass = body.classList.contains("light-mode");
+
+    let targetMode = "dark";
+
+    if (isDarkClass) {
+      targetMode = "light";
+    } else if (isLightClass) {
+      targetMode = "dark";
+    } else {
+      // No class set, using system preference
+      targetMode = isSystemDark ? "light" : "dark";
+    }
+
+    body.classList.remove("dark-mode", "light-mode");
+    body.classList.add(targetMode + "-mode");
+
+    btn.textContent = targetMode === "dark" ? "☀️ Light" : "🌙 Dark";
+  }
+
   function clearBoard() {
     const pasteArea = document.getElementById("pasteArea");
     pasteArea.innerHTML = ""; // Wipes the content
@@ -37,8 +65,9 @@
 
   /**
    * Recursive function to convert HTML DOM nodes to Markdown
+   * Now detects "Visual" code blocks (Divs/Paragraphs with Monospace font)
    */
-  function parseNode(node) {
+  function parseNode(node, isPre = false) {
     if (node.nodeType === Node.TEXT_NODE) {
       return node.textContent;
     }
@@ -47,19 +76,50 @@
       return "";
     }
 
+    const tagName = node.tagName.toLowerCase();
+    const style = window.getComputedStyle(node);
+
+    // 1. Detect Monospace Font (Courier, Consolas, Mono)
+    const fontFamily = style.fontFamily.toLowerCase();
+    const isMonospace =
+      fontFamily.includes("courier") ||
+      fontFamily.includes("consolas") ||
+      fontFamily.includes("mono");
+
+    // 2. Identify "Block" Code
+    // It is a block if it's a <pre> OR if it's a <div>/<p> with Monospace font.
+    const isBlockMono =
+      tagName === "pre" ||
+      ((tagName === "div" || tagName === "p") && isMonospace);
+
+    // 3. Determine if we are *currently* inside a code block
+    // We pass this down to children to stop them from formatting links/bold etc.
+    const currentIsPre = isPre || isBlockMono;
+
     let content = "";
     // Recursively process child nodes
     for (let child of node.childNodes) {
-      content += parseNode(child);
+      content += parseNode(child, currentIsPre);
     }
 
-    // Handle Google Docs specific nesting and standard HTML tags
-    const style = window.getComputedStyle(node);
+    // 4. If we are inside a PRE block (inherited), return plain text immediately.
+    // This strips links, bold, italics, and PREVENTS inner backticks.
+    if (isPre) {
+      if (tagName === "br") return "\n";
+      if (tagName === "p" || tagName === "div") return content + "\n";
+      return content;
+    }
+
+    // 5. If this node IS the block wrapper, return the Markdown Code Block
+    if (isBlockMono) {
+      // We trim to avoid huge gaps, then wrap in triple backticks
+      return `\n\`\`\`\n${content.trim()}\n\`\`\`\n`;
+    }
+
+    // --- Standard Formatting (Only runs if NOT in a code block) ---
+
     const fontWeight = style.fontWeight;
     const fontStyle = style.fontStyle;
-    const tagName = node.tagName.toLowerCase();
-
-    // --- Formatting Wrappers ---
 
     // Bold
     if (
@@ -120,7 +180,7 @@
       return content + "\n";
     }
 
-    // Tables (Simple)
+    // Tables
     if (tagName === "tr") {
       return `|${content}\n`;
     }
@@ -131,52 +191,15 @@
       return "\n" + content + "\n";
     }
 
-    const fontFamily = style.fontFamily.toLowerCase();
-    const isMonospace =
-      fontFamily.includes("courier") ||
-      fontFamily.includes("consolas") ||
-      fontFamily.includes("mono");
-
+    // Inline Code (Fallback)
+    // Only runs if it wasn't caught by the "Block Mono" check above.
+    // e.g. a single word in a sentence.
     if (tagName === "code" || isMonospace) {
-      // Avoid double wrapping if recursion already handled it or if it's a block
       if (!content.startsWith("`")) {
         content = `\`${content}\``;
       }
     }
 
-    // Code Blocks (Pre)
-    if (tagName === "pre") {
-      return `\n\`\`\`\n${content}\n\`\`\`\n`;
-    }
-
     return content;
-  }
-
-  function toggleTheme() {
-    const body = document.body;
-    const btn = document.getElementById("themeBtn");
-
-    // Check if we are forcing dark mode currently, or if system is dark and we haven't set a class
-    const isSystemDark = window.matchMedia(
-      "(prefers-color-scheme: dark)"
-    ).matches;
-    const isDarkClass = body.classList.contains("dark-mode");
-    const isLightClass = body.classList.contains("light-mode");
-
-    let targetMode = "dark";
-
-    if (isDarkClass) {
-      targetMode = "light";
-    } else if (isLightClass) {
-      targetMode = "dark";
-    } else {
-      // No class set, using system preference
-      targetMode = isSystemDark ? "light" : "dark";
-    }
-
-    body.classList.remove("dark-mode", "light-mode");
-    body.classList.add(targetMode + "-mode");
-
-    btn.textContent = targetMode === "dark" ? "☀️ Light" : "🌙 Dark";
   }
 </script>
