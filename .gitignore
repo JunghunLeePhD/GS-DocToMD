@@ -1,7 +1,3 @@
-# Clasp files
-.clasp.json
-.claspignore
-
 # Local properties
 *.properties.json
 
