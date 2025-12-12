@@ -1,30 +1,47 @@
 {
-  "name": "Google Apps Script",
-  "image": "mcr.microsoft.com/devcontainers/javascript-node:0-20",
-  "postCreateCommand": "npm install -g @google/clasp",
+  "name": "Static Site Dev (Pro)",
+  "image": "mcr.microsoft.com/devcontainers/javascript-node:20",
 
-  "remoteEnv": {
-    "GIT_SSH_COMMAND": "ssh -o 'IgnoreUnknown UseKeychain'"
+  "features": {
+    "ghcr.io/devcontainers/features/github-cli:1": {}
   },
-  "mounts": [
-    "source=${localEnv:HOME}/.gitconfig,target=/home/vscode/.gitconfig,type=bind,consistency=cached",
-    "source=${localEnv:HOME}/.ssh,target=/home/vscode/.ssh,type=bind,consistency=cached"
-  ],
 
   "customizations": {
     "vscode": {
       "settings": {
-        "files.associations": {
-          "*.gs": "javascript"
-        },
+        // --- Editor Settings ---
+        "editor.defaultFormatter": "esbenp.prettier-vscode",
         "editor.formatOnSave": true,
-        "editor.defaultFormatter": "esbenp.prettier-vscode"
+        "editor.codeActionsOnSave": {
+          "source.fixAll.eslint": "explicit"
+        },
+        // Helpful for HTML
+        "editor.linkedEditing": true,
+        // Shows guides for indentation
+        "editor.guides.bracketPairs": true
       },
       "extensions": [
-        "dbaeumer.vscode-eslint",
-        "esbenp.prettier-vscode",
-        "PKief.material-icon-theme"
+        // --- 1. Formatting & Quality ---
+        "esbenp.prettier-vscode", // The standard for formatting
+        "dbaeumer.vscode-eslint", // Finds bugs in JS
+
+        // --- 2. HTML Superpowers ---
+        "formulahendry.auto-rename-tag", // Rename opening tag -> closing tag updates auto.
+        "formulahendry.auto-close-tag", // Automatically adds </...>
+        "ecmel.vscode-html-css", // CSS class completion in HTML
+
+        // --- 3. Productivity ---
+        "christian-kohler.path-intellisense", // Autocompletes filenames (e.g. src/img/...)
+        "ritwickdey.LiveServer", // Instant browser preview
+
+        // --- 4. Visuals ---
+        "oderwat.indent-rainbow", // Colors indentation levels (easier to read nested divs)
+        "usernamehw.errorlens" // Shows error messages inline (very helpful!)
       ]
     }
-  }
+  },
+
+  "forwardPorts": [5500],
+  "postCreateCommand": "if [ -f package.json ]; then npm install; fi",
+  "remoteUser": "node"
 }
