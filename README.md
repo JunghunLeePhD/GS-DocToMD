@@ -1,151 +1,125 @@
-# **GS-DocToMD**
+# HTML-DocToMD
 
-**DocToMD** is a lightweight Google Apps Script web application designed to convert rich text (such as content copied from Google Docs or MS Word) into clean Markdown format.
+![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/JunghunLeePhD/HTML-DocToMD/static.yml?label=Build&logo=github)
+![GitHub pages-build-deployment](https://img.shields.io/github/deployments/JunghunLeePhD/HTML-DocToMD/github-pages?label=GitHub%20Pages)
 
-This tool streamlines the documentation process by allowing you to draft in a rich-text environment and instantly convert your work for Markdown-supported platforms (GitHub, Obsidian, Notion, etc.).
+A lightweight, browser-based tool that converts rich text (Google Docs, Word, or formatted HTML) into clean, formatted Markdown.
+
+**[🔗 Live Demo](https://junghunleephd.github.io/HTML-DocToMD/)**
 
 ## **🎥 Demo**
 
 ![Demo of the App](./assets/GS_DocToMD_Demo.gif)
 
-## **🚀 Features**
+## 🚀 Overview
 
-- **Simple Web Interface:** A clean UI to paste your content.
+**HTML-DocToMD** is a pure frontend utility designed to bridge the gap between rich text editors and Markdown environments. It allows users to paste content directly from Google Docs or similar editors and instantly get a Markdown formatted string ready for your codebase, READMEs, or documentation.
 
-- **Instant Conversion:** Converts headings, lists, bold, italic, and links into standard Markdown.
+### 🔄 Evolution: From GAS to Static Web App
 
-- **One-Click Copy:** Automatically copies the converted Markdown to your system clipboard.
+> **Note on Architecture:**
+> Originally, this tool was built as a Google Apps Script (GAS) Web App. You can view the legacy code in the commit history.
+>
+> The project has been refactored into a **modern web application**. It is now a static site built with Node.js, developed in a standardized container, and deployed automatically via **GitHub Actions**.
 
-- **Google Apps Script:** Runs entirely in the cloud; no local server required after deployment.
+## 📂 Project Structure
 
-## **🐳 Development Environment (Dev Container)**
+The project follows a standard modern web architecture:
 
-This repository is configured with a **Dev Container**. This is the recommended way to develop, as it automatically sets up the environment with Node.js, npm, and Clasp installed.
+```text
+HTML-DocToMD/
+├── .devcontainer/       # 🐳 Configuration for VS Code Dev Containers
+│   └── devcontainer.json
+├── .github/
+│   └── workflows/       # ⚙️ CI/CD Pipeline configuration
+│       └── static.yml
+├── src/                 # 💻 Source code (HTML, CSS, JS)
+├── dist/                # 📦 Compiled production build (generated)
+├── package.json         # 📦 NPM dependencies and scripts
+└── README.md
+```
 
-**Requirements for Dev Container:**
+## **✨ Features**
 
-- [Docker Desktop](https://www.docker.com/products/docker-desktop/)
+- **Rich Text Conversion:** Preserves formatting (Headers, Lists, Links, Tables, Bold/Italic).
 
-- [Visual Studio Code](https://code.visualstudio.com/)
+- **Smart Code Detection:** Automatically detects Monospace fonts and converts them to Markdown code blocks.
 
-- [Dev Containers Extension](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers) for VS Code
+- **User Interface:** Dark/Light mode, Responsive design, and One-click copy.
 
-## **🛠 Prerequisites (Manual Setup)**
+- **Zero Backend:** Runs entirely in the browser.
 
-If you are **not** using the Dev Container, ensure you have the following installed on your local machine:
+## **💻 Development Environment**
 
-- **Node.js & npm**
+This project utilizes a **Dev Container** to ensure a consistent development environment for all contributors, regardless of their local OS setup.
 
-- **Google Clasp** (Command Line Apps Script Projects)
+### **Using VS Code & Docker**
+
+1. Ensure you have **Docker Desktop** and **VS Code** installed.
+
+1. Install the [Dev Containers extension](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers) in VS Code.
+
+1. Open this repository in VS Code.
+
+1. Click **"Reopen in Container"** when prompted.
+
+This will automatically set up a Node.js environment with all necessary dependencies pre-installed, preventing "it works on my machine" issues.
+
+### **Local Installation (Manual)**
+
+If you prefer not to use Docker:
+
+1. **Clone the repository:**
 
 ```bash
-npm install @google/clasp -g
+git clone [https://github.com/JunghunLeePhD/HTML-DocToMD.git](https://github.com/JunghunLeePhD/HTML-DocToMD.git)
 ```
 
-- A **Google Account**.
-
-## **📥 Installation & Setup**
-
-### **Option A: Using Dev Container (Recommended)**
-
-1. Clone the repository and open the folder in VS Code.
-
-   ```bash
-   git clone [https://github.com/JunghunLeePhD/GS-DocToMD.git](https://github.com/JunghunLeePhD/GS-DocToMD.git)
-   cd GS-DocToMD
-   ```
-
-2. When prompted by VS Code, click **"Reopen in Container"** (or run the command `Dev Containers: Reopen in Container`from the Command Palette).
-
-3. Wait for the container to build. Once inside, the terminal will already have `clasp` installed.
-
-4. Proceed to step 2 below (Login).
-
-### **Option B: Manual Installation**
-
-1. Clone the repository:
-
-   ```bash
-   git clone [https://github.com/JunghunLeePhD/GS-DocToMD.git](https://github.com/JunghunLeePhD/GS-DocToMD.git)
-   cd GS-DocToMD
-   ```
-
-2. Ensure `clasp` is installed globally (see Prerequisites above).
-
-### **2. Login to Clasp**
-
-Regardless of whether you use the Dev Container or manual setup, you must authenticate `clasp` with your Google account.
+2. **Install Dependencies:**
 
 ```bash
-clasp login
+npm install
 ```
 
-_Note: If running in a Dev Container, click the link provided in the terminal to authenticate in your local browser._
-
-### **3. Create and Push the Project**
-
-Create a new Google Apps Script project linked to the `./src` directory and upload the codes.
+3. **Build the Project:**
 
 ```bash
-clasp create --title "DocToMD" --rootDir ./src
-clasp push
+npm run build
 ```
 
-## **☁️ Deployment**
+## **⚙️ CI/CD Deployment Strategy**
 
-Once the code is pushed, you need to deploy it as a Web App.
+This project uses **GitHub Actions** for continuous deployment. The workflow is defined in `.github/workflows/static.yml`.
 
-1. Navigate to the [Google Apps Script Dashboard](https://script.google.com/home).
+### **How it works**
 
-2. Locate and click on the project named **"DocToMD"**.
+Every time code is pushed to the `main` branch, the following automated pipeline triggers:
 
-3. In the editor, click on the blue **Deploy** button in the top right corner.
+1. **Environment Setup:** Initializes a Linux runner with **Node.js v20**.
 
-4. Select **New deployment**.
+1. **Clean Install:** Runs `npm install` to fetch dependencies defined in `package.json`.
 
-5. Click the "Select type" (gear icon) and choose **Web app**.
+1. **Production Build:** Executes `npm run build` to generate the optimized static files into the `./dist` folder.
 
-6. Configure the following:
+1. **Artifact Upload:** Uploads the `./dist` folder as a GitHub artifact.
 
-   - **Description:** (Optional, e.g., "Initial Deploy")
+1. **Deployment:** Deploys the artifact specifically to **GitHub Pages**.
 
-   - **Execute as:** `Me` (your email)
+### **Workflow Configuration**
 
-   - **Who has access:** `Anyone` (or `Myself` if you want it private)
+The specific configuration used ensures permissions are strictly scoped to `contents: read` and `pages: write` for security.
 
-7. Click **Deploy**.
+```yaml
+# Key steps in our pipeline:
+- name: Build
+  run: npm run build
 
-8. Copy the **Web app URL** provided in the success message.
-
-## **📖 Usage**
-
-1. Open the **Web app URL** in your browser.
-
-2. **Copy** your formatted text (from a Google Doc, website, or Word document).
-
-3. **Paste** the text into the input area on the website.
-
-4. Click the **Convert** (or specific action) button.
-
-5. The text is converted to Markdown and automatically copied to your **pasteboard**.
-
-6. Paste your new Markdown content wherever you need it!
-
-## **📂 File Structure**
-
-The project source code is located in the `src` directory to keep the root clean.
-
+- name: Upload artifact
+  uses: actions/upload-pages-artifact@v3
+  with:
+    path: "./dist" # Deploys only the compiled output
 ```
-GS-DocToMD/
-├── .devcontainer/
-│   └── devcontainer.json  # Configuration for VS Code Dev Container
-├── src/
-│   ├── Code.js            # Server-side Google Apps Script logic
-│   ├── index.html         # Main HTML structure for the Web App
-│   ├── stylesheet.html    # CSS styles (included via include function)
-│   ├── javascript.html    # Client-side JavaScript (logic for DOM & Clipboard)
-│   └── appsscript.json    # Project manifest and configuration
-├── .clasp.json            # Clasp configuration (generated after create)
-├── demo.gif               # Demo animation
-└── README.md              # Project documentation
-```
+
+## **🤝 Contributing**
+
+Contributions are welcome! Please ensure you test your changes in the Dev Container environment before submitting a Pull Request.
